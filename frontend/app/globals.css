@@ -1,0 +1,29 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+:root {
+  --background: 248 250 252;
+  --foreground: 15 23 42;
+  --card: 255 255 255;
+  --border: 226 232 240;
+  --primary: 14 165 233;
+  --muted: 100 116 139;
+}
+
+.dark {
+  --background: 15 23 42;
+  --foreground: 226 232 240;
+  --card: 30 41 59;
+  --border: 51 65 85;
+  --primary: 56 189 248;
+  --muted: 148 163 184;
+}
+
+body {
+  @apply bg-[rgb(var(--background))] text-[rgb(var(--foreground))] antialiased;
+}
+
+.card-panel {
+  @apply rounded-xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] shadow-sm;
+}
