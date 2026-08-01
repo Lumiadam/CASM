@@ -25,9 +25,14 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+origins = [
+    "http://localhost:3000",         # 讓你在本地開發測試時也能用
+    "https://你的前端專案名稱.pages.dev",  # 填入你實際的 Cloudflare 專案網址
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
