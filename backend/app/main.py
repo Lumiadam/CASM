@@ -27,7 +27,7 @@ app = FastAPI(
 
 origins = [
     "http://localhost:3000",         # 讓你在本地開發測試時也能用
-    "https://你的前端專案名稱.pages.dev",  # 填入你實際的 Cloudflare 專案網址
+    "https://casm.pages.dev",  # 填入你實際的 Cloudflare 專案網址
 ]
 
 app.add_middleware(
