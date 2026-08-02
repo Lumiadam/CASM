@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { AlertTriangle, Calendar, CalendarPlus } from "lucide-react";
+import { AlertTriangle, Calendar, CalendarPlus, Lock, Archive } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { PermissionGate } from "@/components/PermissionGate";
@@ -26,6 +26,7 @@ export default function DashboardPage() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [purpose, setPurpose] = useState("內部會議使用");
   const [start, setStart] = useState("");
+  const [quantity, setQuantity] = useState(1);
   const [end, setEnd] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [calendar, setCalendar] = useState<CalendarReservation[]>([]);
@@ -57,6 +58,10 @@ export default function DashboardPage() {
   async function submitReservation() {
     if (!session || !selectedId || !start || !end) return;
     setMessage(null);
+    if (selectedAsset?.reservation_locked || selectedAsset?.status === "RETIRED") {
+      setMessage(selectedAsset?.status === "RETIRED" ? "此資產已封存，無法預約。" : "此資產已鎖定預約，請洽保管人或管理員。");
+      return;
+    }
     try {
       await apiFetch(
         "/reservations",
@@ -66,6 +71,7 @@ export default function DashboardPage() {
             asset_id: selectedId,
             start_time: new Date(start).toISOString(),
             end_time: new Date(end).toISOString(),
+            reservation_quantity: quantity,
             purpose,
           }),
         },
@@ -126,7 +132,7 @@ export default function DashboardPage() {
                     <p className="text-xs text-[rgb(var(--muted))]">{asset.asset_code}</p>
                     <h3 className="font-medium">{asset.name}</h3>
                   </div>
-                  <StatusBadge status={asset.status} />
+                  <div className="flex items-center gap-1"><StatusBadge status={asset.status} />{asset.reservation_locked && <Lock size={16} className="text-amber-600" aria-label="預約已鎖定" />}{asset.status === "RETIRED" && <Archive size={16} className="text-slate-500" aria-label="已封存" />}</div>
                 </div>
                 {asset.lifecycle_warning && (
                   <div className="mt-2 text-xs space-y-0.5 text-amber-600 dark:text-amber-400">
@@ -228,6 +234,19 @@ export default function DashboardPage() {
                       placeholder="請填寫具體用途"
                     />
                   </label>
+                  {selectedAsset && selectedAsset.quantity_total > 1 && (
+                    <label className="text-sm space-y-1 block">
+                      <span className="font-medium text-slate-700 dark:text-slate-300">借用數量（庫存共 {selectedAsset.quantity_total}）</span>
+                      <input
+                        type="number"
+                        min={1}
+                        max={selectedAsset.quantity_total}
+                        className="w-full rounded-lg border border-[rgb(var(--border))] bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-sky-500"
+                        value={quantity}
+                        onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))}
+                      />
+                    </label>
+                  )}
                   <button
                     type="button"
                     onClick={submitReservation}

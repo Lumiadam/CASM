@@ -14,6 +14,8 @@ PERMISSION_MATRIX: dict[str, dict[str, bool]] = {
         "view_damage_logs": True,
         "view_all_reservations": True,
         "cancel_own_reservation": True,
+        "review_change_requests": True,
+        "submit_change_requests": False,
     },
     UserRole.CUSTODIAN.value: {
         "view_all_assets": True,
@@ -25,6 +27,8 @@ PERMISSION_MATRIX: dict[str, dict[str, bool]] = {
         "view_damage_logs": True,
         "view_all_reservations": False,
         "cancel_own_reservation": True,
+        "review_change_requests": False,
+        "submit_change_requests": True,
     },
     UserRole.EMPLOYEE.value: {
         "view_all_assets": True,
@@ -36,6 +40,8 @@ PERMISSION_MATRIX: dict[str, dict[str, bool]] = {
         "view_damage_logs": False,
         "view_all_reservations": False,
         "cancel_own_reservation": True,
+        "review_change_requests": False,
+        "submit_change_requests": True,
     },
 }
 

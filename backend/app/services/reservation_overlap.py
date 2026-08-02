@@ -5,6 +5,7 @@
 
 from datetime import datetime
 
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.models import ApprovalStatus, Reservation
@@ -29,3 +30,21 @@ def find_overlapping_reservation(
     if exclude_reservation_id is not None:
         query = query.filter(Reservation.id != exclude_reservation_id)
     return query.first()
+
+
+def reserved_quantity_for_period(
+    db: Session,
+    asset_id: int,
+    start_time: datetime,
+    end_time: datetime,
+    exclude_reservation_id: int | None = None,
+) -> int:
+    query = db.query(func.coalesce(func.sum(Reservation.reservation_quantity), 0)).filter(
+        Reservation.asset_id == asset_id,
+        Reservation.approval_status.in_(ACTIVE_STATUSES),
+        Reservation.start_time < end_time,
+        Reservation.end_time > start_time,
+    )
+    if exclude_reservation_id is not None:
+        query = query.filter(Reservation.id != exclude_reservation_id)
+    return int(query.scalar() or 0)

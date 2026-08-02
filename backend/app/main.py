@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.routers import assets, auth, health, maintenance, permissions, reservations
+from app.routers import assets, auth, change_requests, health, maintenance, permissions, reservations, users
 from app.seed import init_db_and_seed
 
 
@@ -44,3 +44,5 @@ app.include_router(permissions.router)
 app.include_router(assets.router)
 app.include_router(reservations.router)
 app.include_router(maintenance.router)
+app.include_router(change_requests.router)
+app.include_router(users.router)

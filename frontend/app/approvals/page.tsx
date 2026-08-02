@@ -16,7 +16,7 @@ export default function ApprovalsPage() {
   const [approved, setApproved] = useState<Reservation[]>([]);
   const [msg, setMsg] = useState<string | null>(null);
   const [damageDesc, setDamageDesc] = useState("");
-  const [severity, setSeverity] = useState("LOW");
+  const [availability, setAvailability] = useState("PARTIALLY_USABLE");
   const [returnId, setReturnId] = useState<number | null>(null);
   const [registerDamage, setRegisterDamage] = useState(false);
 
@@ -64,7 +64,7 @@ export default function ApprovalsPage() {
           body: JSON.stringify({
             register_damage: registerDamage,
             damage_description: registerDamage ? damageDesc : null,
-            severity: registerDamage ? severity : null,
+            availability: registerDamage ? availability : null,
           }),
         },
         session.access_token
@@ -179,15 +179,15 @@ export default function ApprovalsPage() {
                             value={damageDesc}
                             onChange={(e) => setDamageDesc(e.target.value)}
                           />
-                          <select
+                          <label className="text-sm">可用性<select
                             className="rounded border border-[rgb(var(--border))] bg-transparent px-2 py-1"
-                            value={severity}
-                            onChange={(e) => setSeverity(e.target.value)}
+                            value={availability}
+                            onChange={(e) => setAvailability(e.target.value)}
                           >
-                            <option value="LOW">LOW</option>
-                            <option value="MEDIUM">MEDIUM</option>
-                            <option value="HIGH">HIGH</option>
-                          </select>
+                            <option value="USABLE">可使用</option>
+                            <option value="PARTIALLY_USABLE">部分可使用</option>
+                            <option value="UNUSABLE">不可使用</option>
+                          </select></label>
                         </>
                       )}
                       <button
